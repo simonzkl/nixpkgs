@@ -585,6 +585,11 @@ stdenv.mkDerivation (
       '';
     };
   }
+  // lib.optionalAttrs (stdenv.hostPlatform.isDarwin && lib.versionAtLeast release_version "22") {
+    # ProgramEnvTest.TestExecuteEmptyEnvironment was introduced in LLVM 22. It clears
+    # DYLD_LIBRARY_PATH which breaks linking against the not-yet-installed libLLVM.dylib.
+    GTEST_FILTER = "-ProgramEnvTest.TestExecuteEmptyEnvironment";
+  }
   // lib.optionalAttrs enableManpages {
     pname = "llvm-manpages";
 
